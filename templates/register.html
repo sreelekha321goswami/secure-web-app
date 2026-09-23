@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register - Secure Web App</title>
+</head>
+<body>
+    <h1>Create an account</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <p><strong>{{ category }}:</strong> {{ message }}</p>
+      {% endfor %}
+    {% endwith %}
+
+    <form method="POST" novalidate>
+        {{ form.hidden_tag() }}
+
+        <p>{{ form.username.label }}<br>{{ form.username() }}
+        {% for e in form.username.errors %}<br><small style="color:red">{{ e }}</small>{% endfor %}</p>
+
+        <p>{{ form.email.label }}<br>{{ form.email() }}
+        {% for e in form.email.errors %}<br><small style="color:red">{{ e }}</small>{% endfor %}</p>
+
+        <p>{{ form.password.label }}<br>{{ form.password() }}
+        {% for e in form.password.errors %}<br><small style="color:red">{{ e }}</small>{% endfor %}</p>
+
+        <p>{{ form.confirm.label }}<br>{{ form.confirm() }}
+        {% for e in form.confirm.errors %}<br><small style="color:red">{{ e }}</small>{% endfor %}</p>
+
+        <button type="submit">Register</button>
+    </form>
+
+    <p><a href="{{ url_for('home') }}">Back to home</a></p>
+</body>
+</html>
