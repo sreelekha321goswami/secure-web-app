@@ -200,5 +200,5 @@ init_db()
 if __name__ == '__main__':
     # ssl_context='adhoc' generates a temporary self-signed certificate
     # so the dev server serves over https:// instead of http://
-    app.run(debug=True, ssl_context='adhoc')
+    app.run(debug=os.environ.get("FLASK_DEBUG") == "1", ssl_context='adhoc')
  
