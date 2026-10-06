@@ -1,4 +1,3 @@
-
 import os
 import re
 import sqlite3
@@ -20,6 +19,11 @@ load_dotenv()
  
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
+ 
+# ---------- Secure cookie settings ----------
+app.config['SESSION_COOKIE_SECURE'] = True      # cookie only sent over HTTPS
+app.config['SESSION_COOKIE_HTTPONLY'] = True     # JavaScript can't read the cookie
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'    # basic CSRF protection on cookies
  
 DATABASE = 'database.db'
  
@@ -116,6 +120,16 @@ def login_required(view_func):
     return wrapped
  
  
+# ---------- Security headers on every response ----------
+@app.after_request
+def set_security_headers(response):
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-Frame-Options'] = 'DENY'
+    response.headers['Strict-Transport-Security'] = 'max-age=63072000; includeSubDomains'
+    response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+    return response
+ 
+ 
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -184,4 +198,7 @@ def dashboard():
 init_db()
  
 if __name__ == '__main__':
-    app.run(debug=True)
+    # ssl_context='adhoc' generates a temporary self-signed certificate
+    # so the dev server serves over https:// instead of http://
+    app.run(debug=True, ssl_context='adhoc')
+ 
